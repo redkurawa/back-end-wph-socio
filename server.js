@@ -94,6 +94,7 @@ app.use('/api/comments', commentsRoutes);
 const { getFeed, likePost, unlikePost, addComment, getComments, savePost, unsavePost } = require('./controllers/posts');
 const { followUser, unfollowUser, getFollowers, getFollowing, getUserPosts } = require('./controllers/users');
 const { getSavedPosts } = require('./controllers/posts');
+const { authenticateToken } = require('./middleware/auth');
 
 app.get('/api/feed', authenticateToken, getFeed);
 
