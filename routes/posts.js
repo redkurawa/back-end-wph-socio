@@ -24,31 +24,31 @@ router.get('/', authenticateToken, getFeed);
 // POST /api/posts - Create a post (upload image + caption)
 router.post('/', authenticateToken, upload.single('image'), createPost);
 
+// POST /api/posts/:id/like - Like a post (MUST be before /:id)
+router.post('/:id/like', authenticateToken, likePost);
+
+// DELETE /api/posts/:id/like - Unlike a post
+router.delete('/:id/like', authenticateToken, unlikePost);
+
+// POST /api/posts/:id/save - Save a post (MUST be before /:id)
+router.post('/:id/save', authenticateToken, savePost);
+
+// DELETE /api/posts/:id/save - Unsave a post
+router.delete('/:id/save', authenticateToken, unsavePost);
+
+// GET /api/posts/:id/comments - Get comments (MUST be before /:id)
+router.get('/:id/comments', authenticateToken, getComments);
+
+// POST /api/posts/:id/comments - Add comment
+router.post('/:id/comments', authenticateToken, addComment);
+
 // GET /api/posts/:id - Get post detail
 router.get('/:id', authenticateToken, getPostDetail);
 
 // DELETE /api/posts/:id - Delete my own post
 router.delete('/:id', authenticateToken, deletePost);
 
-// POST /api/posts/:id/like - Like a post
-router.post('/:id/like', authenticateToken, likePost);
-
-// DELETE /api/posts/:id/like - Unlike a post
-router.delete('/:id/like', authenticateToken, unlikePost);
-
-// GET /api/posts/:id/comments - Get comments
-router.get('/:id/comments', authenticateToken, getComments);
-
-// POST /api/posts/:id/comments - Add comment
-router.post('/:id/comments', authenticateToken, addComment);
-
 // DELETE /api/comments/:id - Delete my comment
 router.delete('/comments/:id', authenticateToken, deleteComment);
-
-// POST /api/posts/:id/save - Save a post (bookmark)
-router.post('/:id/save', authenticateToken, savePost);
-
-// DELETE /api/posts/:id/save - Unsave a post
-router.delete('/:id/save', authenticateToken, unsavePost);
 
 module.exports = router;
