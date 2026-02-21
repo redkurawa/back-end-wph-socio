@@ -90,6 +90,10 @@ app.use('/api/posts', postRoutes);
 app.use('/api/me', profileRoutes);
 app.use('/api/comments', commentsRoutes);
 
+// PATCH alias for /api/me (Cloud Run compatibility)
+const { updateMyProfile } = require('./controllers/profile');
+app.patch('/api/me', authenticateToken, updateMyProfile);
+
 // Alias routes for Cloud Run compatibility
 const { getFeed, likePost, unlikePost, addComment, getComments, savePost, unsavePost } = require('./controllers/posts');
 const { followUser, unfollowUser, getFollowers, getFollowing, getUserPosts } = require('./controllers/users');
