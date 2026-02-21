@@ -747,42 +747,6 @@
         }
       }
     },
-    "/api/posts/{id}/save": {
-      "post": {
-        "summary": "Save a post (bookmark)",
-        "tags": ["Saves"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "Saved" },
-          "404": { "description": "Post not found" }
-        }
-      },
-      "delete": {
-        "summary": "Unsave a post",
-        "tags": ["Saves"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "Unsaved" },
-          "404": { "description": "Post not found" }
-        }
-      }
-    },
     "/api/me/posts": {
       "get": {
         "summary": "Get posts created by the authenticated user",
