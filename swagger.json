@@ -575,56 +575,6 @@
         }
       }
     },
-    "/api/comments/{postId}": {
-      "post": {
-        "summary": "Add comment to post",
-        "tags": ["Comments"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "postId",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["comment"],
-                "properties": {
-                  "comment": { "type": "string", "example": "Great post!" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Created" },
-          "404": { "description": "Post not found" }
-        }
-      },
-      "get": {
-        "summary": "Get comments on post",
-        "tags": ["Comments"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "postId",
-            "required": true,
-            "schema": { "type": "integer" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "Post not found" }
-        }
-      }
-    },
     "/api/follows/{username}": {
       "post": {
         "summary": "Follow a user",
@@ -836,42 +786,6 @@
         ],
         "responses": {
           "200": { "description": "OK" }
-        }
-      }
-    },
-    "/api/follow/{username}": {
-      "post": {
-        "summary": "Follow a user by username (idempotent)",
-        "tags": ["Follow"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "User not found" }
-        }
-      },
-      "delete": {
-        "summary": "Unfollow a user by username (idempotent)",
-        "tags": ["Follow"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "User not found" }
         }
       }
     },

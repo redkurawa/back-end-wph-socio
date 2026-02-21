@@ -139,21 +139,11 @@ app.get('/api/posts/:id/likes', authenticateToken, (req, res) => {
   res.status(501).json({ message: 'Not implemented' });
 });
 
-// POST /api/follow/{username} - Follow alias
-app.post('/api/follow/:username', authenticateToken, followUser);
-
-// DELETE /api/follow/{username} - Unfollow alias
-app.delete('/api/follow/:username', authenticateToken, unfollowUser);
-
 app.get('/api/feed', authenticateToken, getFeed);
 
 // Likes alias
 app.post('/api/likes/:postId', authenticateToken, likePost);
 app.delete('/api/likes/:postId', authenticateToken, unlikePost);
-
-// Comments alias
-app.post('/api/comments/:postId', authenticateToken, addComment);
-app.get('/api/comments/:postId', authenticateToken, getComments);
 
 // Follows alias
 app.post('/api/follows/:username', authenticateToken, followUser);
