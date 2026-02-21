@@ -76,6 +76,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// API Routes - Load all routes with database
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const postRoutes = require('./routes/posts');
+const profileRoutes = require('./routes/profile');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/me', profileRoutes);
+
 // Generic 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found', path: req.path });
