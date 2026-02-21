@@ -77,15 +77,32 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes - Load all routes with database
+console.log('Loading routes...');
+
 const authRoutes = require('./routes/auth');
+console.log('Auth routes loaded');
+
 const userRoutes = require('./routes/users');
+console.log('User routes loaded');
+
 const postRoutes = require('./routes/posts');
+console.log('Post routes loaded');
+
 const profileRoutes = require('./routes/profile');
+console.log('Profile routes loaded');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/me', profileRoutes);
+
+console.log('All routes registered');
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Internal server error', message: err.message });
+});
 
 // Generic 404 handler
 app.use((req, res) => {
