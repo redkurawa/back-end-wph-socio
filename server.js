@@ -30,20 +30,49 @@ app.get('/', (req, res) => {
 // Swagger UI
 const swaggerDocument = require('./swagger.json');
 
-// Serve swagger.json first (before the UI setup)
+// Serve swagger.json
 app.get('/api-swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.json(swaggerDocument);
 });
 
-app.use(
-  '/api-swagger',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument, {
-    swaggerOptions: {
-      url: '/api-swagger.json',
-    },
-  })
-);
+// Swagger UI endpoint for Vercel compatibility
+app.get('/api-swagger', (req, res) => {
+  const swaggerHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sociality API - Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>
+    html { box-sizing: border-box; overflow-y: scroll; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin: 0; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        url: '/api-swagger.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+        plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+        layout: "StandaloneLayout",
+      });
+    };
+  </script>
+</body>
+</html>
+`.trim();
+  res.setHeader('Content-Type', 'text/html');
+  res.send(swaggerHtml);
+});
 
 // Only start server when not in Vercel (serverless environment)
 if (process.env.VERCEL !== '1') {
