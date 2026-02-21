@@ -12,44 +12,10 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Sociality API is running',
     version: '1.0.0',
-    vercel: process.env.VERCEL === '1' ? 'yes' : 'no'
+    vercel: process.env.VERCEL === '1' ? 'yes' : 'no',
+    status: 'healthy'
   });
 });
-
-// API Routes - Define BEFORE Swagger to avoid conflicts
-console.log('Loading API routes...');
-
-try {
-  const authRoutes = require('./routes/auth');
-  console.log('Auth routes loaded');
-  app.use('/api/auth', authRoutes);
-} catch (err) {
-  console.error('Failed to load auth routes:', err.message);
-}
-
-try {
-  const userRoutes = require('./routes/users');
-  console.log('User routes loaded');
-  app.use('/api/users', userRoutes);
-} catch (err) {
-  console.error('Failed to load user routes:', err.message);
-}
-
-try {
-  const postRoutes = require('./routes/posts');
-  console.log('Post routes loaded');
-  app.use('/api/posts', postRoutes);
-} catch (err) {
-  console.error('Failed to load post routes:', err.message);
-}
-
-try {
-  const profileRoutes = require('./routes/profile');
-  console.log('Profile routes loaded');
-  app.use('/api/me', profileRoutes);
-} catch (err) {
-  console.error('Failed to load profile routes:', err.message);
-}
 
 // Swagger UI
 const swaggerDocument = require('./swagger.json');
@@ -103,6 +69,11 @@ app.get('/api-swagger', (req, res) => {
 `.trim();
   res.setHeader('Content-Type', 'text/html');
   res.send(swaggerHtml);
+});
+
+// Simple test API route (without database)
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Generic 404 handler
