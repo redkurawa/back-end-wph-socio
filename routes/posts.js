@@ -48,7 +48,4 @@ router.get('/:id', authenticateToken, getPostDetail);
 // DELETE /api/posts/:id - Delete my own post
 router.delete('/:id', authenticateToken, deletePost);
 
-// DELETE /api/comments/:id - Delete my comment
-router.delete('/comments/:id', authenticateToken, deleteComment);
-
 module.exports = router;

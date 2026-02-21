@@ -81,11 +81,13 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const postRoutes = require('./routes/posts');
 const profileRoutes = require('./routes/profile');
+const commentsRoutes = require('./routes/comments');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/me', profileRoutes);
+app.use('/api/comments', commentsRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
