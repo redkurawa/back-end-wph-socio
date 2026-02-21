@@ -292,42 +292,6 @@
         }
       }
     },
-    "/api/users/{username}/follow": {
-      "post": {
-        "summary": "Follow a user",
-        "tags": ["Follow"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "User not found" }
-        }
-      },
-      "delete": {
-        "summary": "Unfollow a user",
-        "tags": ["Follow"],
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "User not found" }
-        }
-      }
-    },
     "/api/users/{username}/followers": {
       "get": {
         "summary": "Get followers",
