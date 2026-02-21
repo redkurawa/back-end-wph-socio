@@ -91,7 +91,7 @@ app.use('/api/me', profileRoutes);
 app.use('/api/comments', commentsRoutes);
 
 // Alias routes for Cloud Run compatibility
-const { getFeed, likePost, unlikePost, addComment, getComments, savePost, unsavePost } = require('./controllers/posts');
+const { getFeed, likePost, unlikePost, addComment, getComments, savePost, unsavePost, getPostDetail } = require('./controllers/posts');
 const { followUser, unfollowUser, getFollowers, getFollowing, getUserPosts } = require('./controllers/users');
 const { getSavedPosts } = require('./controllers/posts');
 const { updateMyProfile } = require('./controllers/profile');
@@ -99,6 +99,51 @@ const { authenticateToken } = require('./middleware/auth');
 
 // PATCH /api/me (Cloud Run compatibility)
 app.patch('/api/me', authenticateToken, updateMyProfile);
+
+// GET /api/posts/explore - Explore all posts
+app.get('/api/posts/explore', getFeed);
+
+// GET /api/me/posts - Get my posts
+app.get('/api/me/posts', authenticateToken, (req, res) => {
+  req.params.username = req.user.username;
+  getUserPosts(req, res);
+});
+
+// GET /api/me/likes - Get my liked posts
+app.get('/api/me/likes', authenticateToken, (req, res) => {
+  // Implementation would require new controller function
+  res.status(501).json({ message: 'Not implemented' });
+});
+
+// GET /api/me/followers - Get my followers
+app.get('/api/me/followers', authenticateToken, (req, res) => {
+  req.params.username = req.user.username;
+  getFollowers(req, res);
+});
+
+// GET /api/me/following - Get my following
+app.get('/api/me/following', authenticateToken, (req, res) => {
+  req.params.username = req.user.username;
+  getFollowing(req, res);
+});
+
+// GET /api/users/{username}/likes - Get user's liked posts
+app.get('/api/users/:username/likes', authenticateToken, (req, res) => {
+  // Implementation would require new controller function
+  res.status(501).json({ message: 'Not implemented' });
+});
+
+// GET /api/posts/{id}/likes - Get post likes
+app.get('/api/posts/:id/likes', authenticateToken, (req, res) => {
+  // Implementation would require new controller function
+  res.status(501).json({ message: 'Not implemented' });
+});
+
+// POST /api/follow/{username} - Follow alias
+app.post('/api/follow/:username', authenticateToken, followUser);
+
+// DELETE /api/follow/{username} - Unfollow alias
+app.delete('/api/follow/:username', authenticateToken, unfollowUser);
 
 app.get('/api/feed', authenticateToken, getFeed);
 
