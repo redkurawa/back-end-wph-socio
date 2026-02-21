@@ -71,15 +71,48 @@ app.get('/api-swagger', (req, res) => {
 });
 
 // API Routes
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const postRoutes = require('./routes/posts');
-const profileRoutes = require('./routes/profile');
+console.log('Loading API routes...');
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/me', profileRoutes);
+try {
+  const authRoutes = require('./routes/auth');
+  console.log('Auth routes loaded');
+  app.use('/api/auth', authRoutes);
+} catch (err) {
+  console.error('Failed to load auth routes:', err.message);
+}
+
+try {
+  const userRoutes = require('./routes/users');
+  console.log('User routes loaded');
+  app.use('/api/users', userRoutes);
+} catch (err) {
+  console.error('Failed to load user routes:', err.message);
+}
+
+try {
+  const postRoutes = require('./routes/posts');
+  console.log('Post routes loaded');
+  app.use('/api/posts', postRoutes);
+} catch (err) {
+  console.error('Failed to load post routes:', err.message);
+}
+
+try {
+  const profileRoutes = require('./routes/profile');
+  console.log('Profile routes loaded');
+  app.use('/api/me', profileRoutes);
+} catch (err) {
+  console.error('Failed to load profile routes:', err.message);
+}
+
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Not Found', 
+    message: `Cannot ${req.method} ${req.path}`,
+    hint: 'Check if the route is properly registered'
+  });
+});
 
 // Vercel serverless export
 module.exports = app;
