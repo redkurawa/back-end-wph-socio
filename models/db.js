@@ -1,21 +1,35 @@
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('neon.tech')
-    ? {
-        rejectUnauthorized: false,
-        requestCert: true,
-      }
-    : false,
-});
+let pool = null;
 
-// Don't exit on error - just log
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-});
+function getPool() {
+  if (!pool && process.env.DATABASE_URL) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL?.includes('neon.tech')
+        ? {
+            rejectUnauthorized: false,
+            requestCert: true,
+          }
+        : false,
+    });
+
+    pool.on('error', (err) => {
+      console.error('Unexpected error on idle client', err);
+    });
+  }
+  return pool;
+}
 
 module.exports = {
-  query: (text, params) => pool.query(text, params),
-  pool,
+  query: async (text, params) => {
+    const p = getPool();
+    if (!p) {
+      throw new Error(
+        'Database not configured. Please set DATABASE_URL environment variable.'
+      );
+    }
+    return p.query(text, params);
+  },
+  getPool,
 };
