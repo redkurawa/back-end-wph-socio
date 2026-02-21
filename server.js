@@ -89,6 +89,42 @@ app.use('/api/posts', postRoutes);
 app.use('/api/me', profileRoutes);
 app.use('/api/comments', commentsRoutes);
 
+// Alias routes for Cloud Run compatibility
+const { getFeed, likePost, unlikePost, addComment, getComments, savePost, unsavePost } = require('./controllers/posts');
+const { followUser, unfollowUser, getFollowers, getFollowing, getUserPosts } = require('./controllers/users');
+const { getSavedPosts } = require('./controllers/posts');
+
+app.get('/api/feed', authenticateToken, getFeed);
+
+// Likes alias
+app.post('/api/likes/:postId', authenticateToken, likePost);
+app.delete('/api/likes/:postId', authenticateToken, unlikePost);
+
+// Comments alias
+app.post('/api/comments/:postId', authenticateToken, addComment);
+app.get('/api/comments/:postId', authenticateToken, getComments);
+
+// Follows alias
+app.post('/api/follows/:username', authenticateToken, followUser);
+app.delete('/api/follows/:username', authenticateToken, unfollowUser);
+
+// Saves alias
+app.post('/api/saves/:postId', authenticateToken, savePost);
+app.delete('/api/saves/:postId', authenticateToken, unsavePost);
+app.get('/api/users/:username/saves', authenticateToken, (req, res) => {
+  // Map username to user and get their saved posts
+  require('./models/db').query(
+    'SELECT id FROM users WHERE username = $1',
+    [req.params.username]
+  ).then(result => {
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    req.params.id = result.rows[0].id;
+    getSavedPosts(req, res);
+  });
+});
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);

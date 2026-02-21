@@ -123,6 +123,31 @@
           "200": { "description": "OK" },
           "400": { "description": "Bad Request" }
         }
+      },
+      "patch": {
+        "summary": "Partially update my profile",
+        "tags": ["My Profile"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "bio": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
+        }
       }
     },
     "/api/me/password": {
@@ -156,6 +181,26 @@
       "get": {
         "summary": "Get my saved posts",
         "tags": ["Saves"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": { "type": "integer", "default": 20, "maximum": 50 }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/feed": {
+      "get": {
+        "summary": "Get feed (posts from followed users)",
+        "tags": ["Posts"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
@@ -408,7 +453,43 @@
         }
       }
     },
-    "/api/posts/{id}/like": {
+    "/api/likes/{postId}": {
+      "post": {
+        "summary": "Like a post (alias)",
+        "tags": ["Likes"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "delete": {
+        "summary": "Unlike a post (alias)",
+        "tags": ["Likes"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/posts/{id}/comments": {
       "post": {
         "summary": "Like a post",
         "tags": ["Likes"],
@@ -491,6 +572,157 @@
         "responses": {
           "201": { "description": "Created" },
           "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/comments/{postId}": {
+      "post": {
+        "summary": "Add comment to post",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["comment"],
+                "properties": {
+                  "comment": { "type": "string", "example": "Great post!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "get": {
+        "summary": "Get comments on post",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/follows/{username}": {
+      "post": {
+        "summary": "Follow a user",
+        "tags": ["Follow"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "delete": {
+        "summary": "Unfollow a user",
+        "tags": ["Follow"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/saves/{postId}": {
+      "post": {
+        "summary": "Save a post (bookmark)",
+        "tags": ["Saves"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Saved" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "delete": {
+        "summary": "Unsave a post",
+        "tags": ["Saves"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Unsaved" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/users/{username}/saves": {
+      "get": {
+        "summary": "Get user's saved posts",
+        "tags": ["Saves"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": { "type": "integer", "default": 20, "maximum": 50 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "User not found" }
         }
       }
     },
