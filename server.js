@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const db = require('./models/db');
 
 const app = express();
 
@@ -113,7 +114,7 @@ app.post('/api/saves/:postId', authenticateToken, savePost);
 app.delete('/api/saves/:postId', authenticateToken, unsavePost);
 app.get('/api/users/:username/saves', authenticateToken, (req, res) => {
   // Map username to user and get their saved posts
-  require('./models/db').query(
+  db.query(
     'SELECT id FROM users WHERE username = $1',
     [req.params.username]
   ).then(result => {
@@ -122,6 +123,9 @@ app.get('/api/users/:username/saves', authenticateToken, (req, res) => {
     }
     req.params.id = result.rows[0].id;
     getSavedPosts(req, res);
+  }).catch(err => {
+    console.error('Error in /api/users/:username/saves:', err);
+    res.status(500).json({ error: 'Internal server error' });
   });
 });
 
