@@ -30,6 +30,11 @@ app.get('/', (req, res) => {
 // Swagger UI
 const swaggerDocument = require('./swagger.json');
 
+// Serve swagger.json first (before the UI setup)
+app.get('/api-swagger.json', (req, res) => {
+  res.json(swaggerDocument);
+});
+
 app.use(
   '/api-swagger',
   swaggerUi.serve,
@@ -40,14 +45,12 @@ app.use(
   })
 );
 
-// Serve swagger.json
-app.get('/api-swagger.json', (req, res) => {
-  res.json(swaggerDocument);
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Only start server when not in Vercel (serverless environment)
+if (process.env.VERCEL !== '1') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
