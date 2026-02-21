@@ -9,12 +9,47 @@ app.use(express.json());
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Sociality API is running', 
+  res.json({
+    message: 'Sociality API is running',
     version: '1.0.0',
     vercel: process.env.VERCEL === '1' ? 'yes' : 'no'
   });
 });
+
+// API Routes - Define BEFORE Swagger to avoid conflicts
+console.log('Loading API routes...');
+
+try {
+  const authRoutes = require('./routes/auth');
+  console.log('Auth routes loaded');
+  app.use('/api/auth', authRoutes);
+} catch (err) {
+  console.error('Failed to load auth routes:', err.message);
+}
+
+try {
+  const userRoutes = require('./routes/users');
+  console.log('User routes loaded');
+  app.use('/api/users', userRoutes);
+} catch (err) {
+  console.error('Failed to load user routes:', err.message);
+}
+
+try {
+  const postRoutes = require('./routes/posts');
+  console.log('Post routes loaded');
+  app.use('/api/posts', postRoutes);
+} catch (err) {
+  console.error('Failed to load post routes:', err.message);
+}
+
+try {
+  const profileRoutes = require('./routes/profile');
+  console.log('Profile routes loaded');
+  app.use('/api/me', profileRoutes);
+} catch (err) {
+  console.error('Failed to load profile routes:', err.message);
+}
 
 // Swagger UI
 const swaggerDocument = require('./swagger.json');
@@ -70,48 +105,9 @@ app.get('/api-swagger', (req, res) => {
   res.send(swaggerHtml);
 });
 
-// API Routes
-console.log('Loading API routes...');
-
-try {
-  const authRoutes = require('./routes/auth');
-  console.log('Auth routes loaded');
-  app.use('/api/auth', authRoutes);
-} catch (err) {
-  console.error('Failed to load auth routes:', err.message);
-}
-
-try {
-  const userRoutes = require('./routes/users');
-  console.log('User routes loaded');
-  app.use('/api/users', userRoutes);
-} catch (err) {
-  console.error('Failed to load user routes:', err.message);
-}
-
-try {
-  const postRoutes = require('./routes/posts');
-  console.log('Post routes loaded');
-  app.use('/api/posts', postRoutes);
-} catch (err) {
-  console.error('Failed to load post routes:', err.message);
-}
-
-try {
-  const profileRoutes = require('./routes/profile');
-  console.log('Profile routes loaded');
-  app.use('/api/me', profileRoutes);
-} catch (err) {
-  console.error('Failed to load profile routes:', err.message);
-}
-
-// 404 handler for API routes
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Not Found', 
-    message: `Cannot ${req.method} ${req.path}`,
-    hint: 'Check if the route is properly registered'
-  });
+// Generic 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.path });
 });
 
 // Vercel serverless export
