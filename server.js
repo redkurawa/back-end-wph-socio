@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
 
@@ -8,14 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Static files for uploads (only in development)
-if (process.env.VERCEL !== '1') {
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-}
-
 // Root endpoint
 app.get('/', (req, res) => {
-  res.json({ message: 'Sociality API is running', version: '1.0.0' });
+  res.json({ 
+    message: 'Sociality API is running', 
+    version: '1.0.0',
+    vercel: process.env.VERCEL === '1' ? 'yes' : 'no'
+  });
 });
 
 // Swagger UI
@@ -65,7 +63,7 @@ app.get('/api-swagger', (req, res) => {
   res.send(swaggerHtml);
 });
 
-// API Routes - load after swagger to avoid conflicts
+// API Routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const postRoutes = require('./routes/posts');
