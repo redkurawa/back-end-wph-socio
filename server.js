@@ -109,36 +109,6 @@ app.get('/api/me/posts', authenticateToken, (req, res) => {
   getUserPosts(req, res);
 });
 
-// GET /api/me/likes - Get my liked posts
-app.get('/api/me/likes', authenticateToken, (req, res) => {
-  // Implementation would require new controller function
-  res.status(501).json({ message: 'Not implemented' });
-});
-
-// GET /api/me/followers - Get my followers
-app.get('/api/me/followers', authenticateToken, (req, res) => {
-  req.params.username = req.user.username;
-  getFollowers(req, res);
-});
-
-// GET /api/me/following - Get my following
-app.get('/api/me/following', authenticateToken, (req, res) => {
-  req.params.username = req.user.username;
-  getFollowing(req, res);
-});
-
-// GET /api/users/{username}/likes - Get user's liked posts
-app.get('/api/users/:username/likes', authenticateToken, (req, res) => {
-  // Implementation would require new controller function
-  res.status(501).json({ message: 'Not implemented' });
-});
-
-// GET /api/posts/{id}/likes - Get post likes
-app.get('/api/posts/:id/likes', authenticateToken, (req, res) => {
-  // Implementation would require new controller function
-  res.status(501).json({ message: 'Not implemented' });
-});
-
 app.get('/api/feed', authenticateToken, getFeed);
 
 // Likes alias

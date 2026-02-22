@@ -94,38 +94,13 @@
     },
     "/api/me": {
       "get": {
-        "summary": "Get my profile",
+        "summary": "Get my profile + quick stats",
         "tags": ["My Profile"],
         "security": [{ "bearerAuth": [] }],
         "responses": { "200": { "description": "OK" } }
       },
-      "put": {
-        "summary": "Update my profile",
-        "tags": ["My Profile"],
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "bio": { "type": "string" },
-                  "phone": { "type": "string" },
-                  "image": { "type": "string", "format": "binary" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" }
-        }
-      },
       "patch": {
-        "summary": "Partially update my profile",
+        "summary": "Update my basic profile (supports avatar upload)",
         "tags": ["My Profile"],
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
@@ -150,37 +125,10 @@
         }
       }
     },
-    "/api/me/password": {
-      "put": {
-        "summary": "Change password",
-        "tags": ["My Profile"],
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["oldPassword", "newPassword"],
-                "properties": {
-                  "oldPassword": { "type": "string" },
-                  "newPassword": { "type": "string", "minLength": 6 }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "401": { "description": "Unauthorized" }
-        }
-      }
-    },
-    "/api/me/saved": {
+    "/api/me/posts": {
       "get": {
-        "summary": "Get my saved posts",
-        "tags": ["Saves"],
+        "summary": "Get posts created by the authenticated user",
+        "tags": ["Posts"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
